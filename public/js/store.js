@@ -2346,7 +2346,7 @@ $(window).ready(function () {
                     }
                 ]
             },
-            ct,
+            // ct,
             {
                 xtype: "panel",
                 title: __('Workflow'),
