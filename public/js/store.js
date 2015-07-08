@@ -2169,182 +2169,182 @@ $(window).ready(function () {
                         region: "center",
                         html: '<iframe frameborder="0" id="wfseditor" style="width:100%;height:100%" src="/editor/' + screenName + '/' + schema + '"></iframe>'
                     },
-                    {
-                        xtype: "panel",
-                        autoScroll: true,
-                        region: 'east',
-                        collapsible: true,
-                        collapsed: true,
-                        id: "layerStylePanel",
-                        width: 340,
-                        frame: false,
-                        plain: true,
-                        border: true,
-                        layoutConfig: {
-                            animate: true
-                        },
-                        items: [
-                            {
-                                xtype: "tabpanel",
-                                border: false,
-                                id: "layerStyleTabs",
-                                activeTab: 0,
-                                plain: true,
-                                items: [
-                                    {
-                                        xtype: "panel",
-                                        title: __('Classes'),
-                                        defaults: {
-                                            border: false
-                                        },
-                                        items: [
-                                            {
-                                                xtype: "panel",
-                                                id: "a2",
-                                                layout: "fit",
-                                                height: 150
-                                            },
-                                            new Ext.TabPanel({
-                                                activeTab: 0,
-                                                region: 'center',
-                                                plain: true,
-                                                id: "classTabs",
-                                                border: false,
-                                                height: 470,
-                                                defaults: {
-                                                    layout: "fit",
-                                                    border: false
-                                                },
-                                                tbar: [
-                                                    {
-                                                        text: '<i class="icon-ok btn-gc"></i> ' + __('Update'),
-                                                        handler: function () {
-                                                            var grid = Ext.getCmp("propGrid");
-                                                            var grid2 = Ext.getCmp("propGrid2");
-                                                            var grid3 = Ext.getCmp("propGrid3");
-                                                            var grid4 = Ext.getCmp("propGrid4");
-                                                            var grid5 = Ext.getCmp("propGrid5");
-                                                            var source = grid.getSource();
-                                                            jQuery.extend(source, grid2.getSource());
-                                                            jQuery.extend(source, grid3.getSource());
-                                                            jQuery.extend(source, grid4.getSource());
-                                                            jQuery.extend(source, grid5.getSource());
-                                                            var param = {
-                                                                data: source
-                                                            };
-                                                            param = Ext.util.JSON.encode(param);
+                    // {
+                    //     xtype: "panel",
+                    //     autoScroll: true,
+                    //     region: 'east',
+                    //     collapsible: true,
+                    //     collapsed: true,
+                    //     id: "layerStylePanel",
+                    //     width: 340,
+                    //     frame: false,
+                    //     plain: true,
+                    //     border: true,
+                    //     layoutConfig: {
+                    //         animate: true
+                    //     },
+                    //     items: [
+                    //         {
+                    //             xtype: "tabpanel",
+                    //             border: false,
+                    //             id: "layerStyleTabs",
+                    //             activeTab: 0,
+                    //             plain: true,
+                    //             items: [
+                    //                 {
+                    //                     xtype: "panel",
+                    //                     title: __('Classes'),
+                    //                     defaults: {
+                    //                         border: false
+                    //                     },
+                    //                     items: [
+                    //                         {
+                    //                             xtype: "panel",
+                    //                             id: "a2",
+                    //                             layout: "fit",
+                    //                             height: 150
+                    //                         },
+                    //                         new Ext.TabPanel({
+                    //                             activeTab: 0,
+                    //                             region: 'center',
+                    //                             plain: true,
+                    //                             id: "classTabs",
+                    //                             border: false,
+                    //                             height: 470,
+                    //                             defaults: {
+                    //                                 layout: "fit",
+                    //                                 border: false
+                    //                             },
+                    //                             tbar: [
+                    //                                 {
+                    //                                     text: '<i class="icon-ok btn-gc"></i> ' + __('Update'),
+                    //                                     handler: function () {
+                    //                                         var grid = Ext.getCmp("propGrid");
+                    //                                         var grid2 = Ext.getCmp("propGrid2");
+                    //                                         var grid3 = Ext.getCmp("propGrid3");
+                    //                                         var grid4 = Ext.getCmp("propGrid4");
+                    //                                         var grid5 = Ext.getCmp("propGrid5");
+                    //                                         var source = grid.getSource();
+                    //                                         jQuery.extend(source, grid2.getSource());
+                    //                                         jQuery.extend(source, grid3.getSource());
+                    //                                         jQuery.extend(source, grid4.getSource());
+                    //                                         jQuery.extend(source, grid5.getSource());
+                    //                                         var param = {
+                    //                                             data: source
+                    //                                         };
+                    //                                         param = Ext.util.JSON.encode(param);
 
-                                                            // Encode the json because it can contain "="
-                                                            //param = encodeURIComponent(param);
+                    //                                         // Encode the json because it can contain "="
+                    //                                         //param = encodeURIComponent(param);
 
-                                                            Ext.Ajax.request({
-                                                                url: '/controllers/classification/index/' + wmsClasses.table + '/' + wmsClass.classId,
-                                                                method: 'put',
-                                                                params: param,
-                                                                headers: {
-                                                                    'Content-Type': 'application/json; charset=utf-8'
-                                                                },
-                                                                success: function (response) {
-                                                                    App.setAlert(App.STATUS_OK, __("Style is updated"));
-                                                                    writeFiles(wmsClasses.table);
-                                                                    wmsClasses.store.load();
-                                                                    store.load();
-                                                                },
-                                                                failure: function (response) {
-                                                                    Ext.MessageBox.show({
-                                                                        title: 'Failure',
-                                                                        msg: __(Ext.decode(response.responseText).message),
-                                                                        buttons: Ext.MessageBox.OK,
-                                                                        width: 400,
-                                                                        height: 300,
-                                                                        icon: Ext.MessageBox.ERROR
-                                                                    });
-                                                                }
-                                                            });
-                                                        }
-                                                    }
-                                                ],
-                                                items: [
-                                                    {
-                                                        xtype: "panel",
-                                                        id: "a3",
-                                                        title: "Base"
-                                                    },
-                                                    {
-                                                        xtype: "panel",
-                                                        id: "a8",
-                                                        title: "Symbol1"
-                                                    },
-                                                    {
-                                                        xtype: "panel",
-                                                        id: "a9",
-                                                        title: "Symbol2"
-                                                    },
-                                                    {
-                                                        xtype: "panel",
-                                                        id: "a10",
-                                                        title: "Label1"
-                                                    },
-                                                    {
-                                                        xtype: "panel",
-                                                        id: "a11",
-                                                        title: "Label2"
-                                                    }
+                    //                                         Ext.Ajax.request({
+                    //                                             url: '/controllers/classification/index/' + wmsClasses.table + '/' + wmsClass.classId,
+                    //                                             method: 'put',
+                    //                                             params: param,
+                    //                                             headers: {
+                    //                                                 'Content-Type': 'application/json; charset=utf-8'
+                    //                                             },
+                    //                                             success: function (response) {
+                    //                                                 App.setAlert(App.STATUS_OK, __("Style is updated"));
+                    //                                                 writeFiles(wmsClasses.table);
+                    //                                                 wmsClasses.store.load();
+                    //                                                 store.load();
+                    //                                             },
+                    //                                             failure: function (response) {
+                    //                                                 Ext.MessageBox.show({
+                    //                                                     title: 'Failure',
+                    //                                                     msg: __(Ext.decode(response.responseText).message),
+                    //                                                     buttons: Ext.MessageBox.OK,
+                    //                                                     width: 400,
+                    //                                                     height: 300,
+                    //                                                     icon: Ext.MessageBox.ERROR
+                    //                                                 });
+                    //                                             }
+                    //                                         });
+                    //                                     }
+                    //                                 }
+                    //                             ],
+                    //                             items: [
+                    //                                 {
+                    //                                     xtype: "panel",
+                    //                                     id: "a3",
+                    //                                     title: "Base"
+                    //                                 },
+                    //                                 {
+                    //                                     xtype: "panel",
+                    //                                     id: "a8",
+                    //                                     title: "Symbol1"
+                    //                                 },
+                    //                                 {
+                    //                                     xtype: "panel",
+                    //                                     id: "a9",
+                    //                                     title: "Symbol2"
+                    //                                 },
+                    //                                 {
+                    //                                     xtype: "panel",
+                    //                                     id: "a10",
+                    //                                     title: "Label1"
+                    //                                 },
+                    //                                 {
+                    //                                     xtype: "panel",
+                    //                                     id: "a11",
+                    //                                     title: "Label2"
+                    //                                 }
 
-                                                ]
-                                            })
+                    //                             ]
+                    //                         })
 
 
-                                        ]
-                                    },
-                                    {
-                                        xtype: "panel",
-                                        title: __('Settings'),
-                                        height: 700,
-                                        defaults: {
-                                            border: false
-                                        },
-                                        items: [
-                                            {
-                                                xtype: "panel",
-                                                id: "a1",
-                                                layout: "fit"
-                                            },
-                                            {
-                                                xtype: "panel",
-                                                id: "a4"
+                    //                     ]
+                    //                 },
+                    //                 {
+                    //                     xtype: "panel",
+                    //                     title: __('Settings'),
+                    //                     height: 700,
+                    //                     defaults: {
+                    //                         border: false
+                    //                     },
+                    //                     items: [
+                    //                         {
+                    //                             xtype: "panel",
+                    //                             id: "a1",
+                    //                             layout: "fit"
+                    //                         },
+                    //                         {
+                    //                             xtype: "panel",
+                    //                             id: "a4"
 
-                                            },
-                                            {
-                                                id: 'a5',
-                                                border: false,
-                                                bodyStyle: {
-                                                    background: '#ffffff',
-                                                    padding: '10px'
-                                                }
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        xtype: "panel",
-                                        title: 'Legend',
-                                        autoHeight: true,
-                                        defaults: {
-                                            border: false,
-                                            bodyStyle: "padding : 7px"
-                                        },
-                                        items: [
-                                            {
-                                                xtype: "panel",
-                                                id: "a6",
-                                                html: ""
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
+                    //                         },
+                    //                         {
+                    //                             id: 'a5',
+                    //                             border: false,
+                    //                             bodyStyle: {
+                    //                                 background: '#ffffff',
+                    //                                 padding: '10px'
+                    //                             }
+                    //                         }
+                    //                     ]
+                    //                 },
+                    //                 {
+                    //                     xtype: "panel",
+                    //                     title: 'Legend',
+                    //                     autoHeight: true,
+                    //                     defaults: {
+                    //                         border: false,
+                    //                         bodyStyle: "padding : 7px"
+                    //                     },
+                    //                     items: [
+                    //                         {
+                    //                             xtype: "panel",
+                    //                             id: "a6",
+                    //                             html: ""
+                    //                         }
+                    //                     ]
+                    //                 }
+                    //             ]
+                    //         }
+                    //     ]
+                    // }
                 ]
             },
             // ct,
