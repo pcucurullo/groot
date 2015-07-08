@@ -2162,7 +2162,6 @@ $(window).ready(function () {
                 title: __('Map'),
                 layout: 'border',
                 id: "mapTab",
-                // id: "mainTabs__ext-comp-1038",
                 items: [
                     {
                         frame: false,
@@ -2740,4 +2739,5 @@ $(window).ready(function () {
 });
 
 
-
+// Hide tab bar
+$('.x-tab-panel-header').css('display:none;');
