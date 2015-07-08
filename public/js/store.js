@@ -2593,42 +2593,42 @@ $(window).ready(function () {
                     }
                 ]
             },
-            {
-                xtype: "panel",
-                title: __('Log'),
-                layout: 'border',
-                listeners: {
-                    activate: function () {
-                        Ext.fly(this.ownerCt.getTabEl(this)).on({
-                            click: function () {
-                                Ext.Ajax.request({
-                                    url: '/controllers/session/log',
-                                    method: 'get',
-                                    headers: {
-                                        'Content-Type': 'application/json; charset=utf-8'
-                                    },
-                                    success: function (response) {
-                                        $("#gc-log").html(Ext.decode(response.responseText).data);
-                                    }
-                                    //failure: test
-                                });
-                            }
-                        });
-                    },
-                    single: true
-                },
-                items: [
-                    {
-                        xtype: "panel",
-                        autoScroll: true,
-                        region: 'center',
-                        frame: true,
-                        plain: true,
-                        border: true,
-                        html: "<div id='gc-log'></div>"
-                    }
-                ]
-            }
+            // {
+            //     xtype: "panel",
+            //     title: __('Log'),
+            //     layout: 'border',
+            //     listeners: {
+            //         activate: function () {
+            //             Ext.fly(this.ownerCt.getTabEl(this)).on({
+            //                 click: function () {
+            //                     Ext.Ajax.request({
+            //                         url: '/controllers/session/log',
+            //                         method: 'get',
+            //                         headers: {
+            //                             'Content-Type': 'application/json; charset=utf-8'
+            //                         },
+            //                         success: function (response) {
+            //                             $("#gc-log").html(Ext.decode(response.responseText).data);
+            //                         }
+            //                         //failure: test
+            //                     });
+            //                 }
+            //             });
+            //         },
+            //         single: true
+            //     },
+            //     items: [
+            //         {
+            //             xtype: "panel",
+            //             autoScroll: true,
+            //             region: 'center',
+            //             frame: true,
+            //             plain: true,
+            //             border: true,
+            //             html: "<div id='gc-log'></div>"
+            //         }
+            //     ]
+            // }
         ]
     });
     var viewPort = new Ext.Viewport({
