@@ -2161,6 +2161,8 @@ $(window).ready(function () {
                 xtype: "panel",
                 title: __('Map'),
                 layout: 'border',
+                id: "mapTab",
+                // id: "mainTabs__ext-comp-1038",
                 items: [
                     {
                         frame: false,
