@@ -2084,32 +2084,33 @@ $(window).ready(function () {
     '</tr>' +
     '</table>'];
     var bookTpl = new Ext.Template(bookTplMarkup);
-    // var ct = new Ext.Panel({
-    //     title: __('Database'),
-    //     frame: false,
-    //     layout: 'border',
-    //     region: 'center',
-    //     border: true,
-    //     split: true,
-    //     items: [grid, {
-    //         id: 'detailPanel',
-    //         region: 'south',
-    //         border: false,
-    //         height: 70,
-    //         bodyStyle: {
-    //             background: '#777',
-    //             color: '#fff',
-    //             padding: '7px'
-    //         }
-    //     }, {
-    //         id: 'structurePanel',
-    //         region: 'center',
-    //         collapsed: false,
-    //         collapsible: false,
-    //         border: false,
-    //         layout: 'fit'
-    //     }]
-    // });
+    var ct = new Ext.Panel({
+        title: __('Database'),
+        frame: false,
+        layout: 'border',
+        region: 'center',
+        border: true,
+        split: true,
+        closeAction: 'hide',
+        items: [grid, {
+            id: 'detailPanel',
+            region: 'south',
+            border: false,
+            height: 70,
+            bodyStyle: {
+                background: '#777',
+                color: '#fff',
+                padding: '7px'
+            }
+        }, {
+            id: 'structurePanel',
+            region: 'center',
+            collapsed: false,
+            collapsible: false,
+            border: false,
+            layout: 'fit'
+        }]
+    });
     grid.getSelectionModel().on('rowselect', function (sm, rowIdx, r) {
         var records = sm.getSelections();
         if (records.length === 1) {
