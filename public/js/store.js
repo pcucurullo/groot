@@ -2347,252 +2347,252 @@ $(window).ready(function () {
                     }
                 ]
             },
-            ct,
-            {
-                xtype: "panel",
-                title: __('Workflow'),
-                layout: 'border',
-                id: "workflowPanel",
-                listeners: {
-                    activate: function () {
-                        if (!workflowStoreLoaded) {
-                            workflowStore.load();
-                            workflowStoreLoaded = true;
-                        }
-                    }
-                },
-                items: [
-                    new Ext.grid.GridPanel({
-                        id: "workflowGrid",
-                        store: workflowStore,
-                        viewConfig: {
-                            forceFit: true,
-                            stripeRows: true
-                        },
-                        height: 300,
-                        split: true,
-                        region: 'center',
-                        frame: false,
-                        border: false,
-                        plugins: [new Ext.ux.grid.GridFilters({
-                            // encode and local configuration options defined previously for easier reuse
-                            //encode: encode, // json encode the filter query
-                            local: true,   // defaults to false (remote filtering)
-                            filters: [{
-                                type: 'string',
-                                dataIndex: 'f_table_name',
-                                disabled: false
-                            }]
-                        })],
-                        sm: new Ext.grid.RowSelectionModel({
-                            singleSelect: true
-                        }),
-                        cm: new Ext.grid.ColumnModel({
-                            defaults: {
-                                sortable: true,
-                                menuDisabled: true
-                            },
-                            columns: [
-                                {
-                                    header: __("Operation"),
-                                    dataIndex: "operation",
-                                    sortable: true,
-                                    width: 35,
-                                    flex: 1
-                                }, /*{
-                                    header: __("Schema"),
-                                    dataIndex: "f_schema_name",
-                                    sortable: true,
-                                    width: 35,
-                                    flex: 0.5
-                                },*/
-                                {
-                                    header: __("Table"),
-                                    dataIndex: "f_table_name",
-                                    sortable: true,
-                                    width: 35,
-                                    flex: 0.5,
-                                    menuDisabled: false
-                                }, {
-                                    header: __("Fid"),
-                                    dataIndex: "gid",
-                                    sortable: true,
-                                    width: 25,
-                                    flex: 1
-                                }, {
-                                    header: __("Version id"),
-                                    dataIndex: "version_gid",
-                                    sortable: true,
-                                    width: 40,
-                                    flex: 1
-                                }, {
-                                    header: __("Status"),
-                                    dataIndex: "status_text",
-                                    sortable: true,
-                                    width: 35,
-                                    flex: 1
-                                }, {
-                                    header: __("Latest edit by"),
-                                    dataIndex: "gc2_user",
-                                    sortable: true,
-                                    width: 50,
-                                    flex: 1
-                                }, {
-                                    header: __("Authored by"),
-                                    dataIndex: "author",
-                                    sortable: true,
-                                    width: 50,
-                                    flex: 2
-                                }, {
-                                    header: __("Reviewed by"),
-                                    dataIndex: "reviewer",
-                                    sortable: true,
-                                    width: 50,
-                                    flex: 2
-                                }, {
-                                    header: __("Published by"),
-                                    dataIndex: "publisher",
-                                    sortable: true,
-                                    width: 50,
-                                    flex: 2
-                                }, {
-                                    header: __("Created"),
-                                    dataIndex: "created",
-                                    sortable: true,
-                                    width: 120,
-                                    flex: 1
-                                }
-                            ]
-                        }),
-                        tbar: [
-                            {
-                                text: '<i class="icon-refresh btn-gc"></i> ' + __('Reload'),
-                                tooltip: __("Reload the list"),
-                                handler: function () {
-                                    if (Ext.getCmp('workflowShowAllBtn').pressed) {
-                                        workflowStore.load({params: "all=t"});
-                                    } else {
-                                        workflowStore.load();
-                                    }
-                                }
-                            },
-                            {
-                                text: '<i class="icon-tasks btn-gc"></i> ' + __('Show all'),
-                                enableToggle: true,
-                                id: "workflowShowAllBtn",
-                                disabled: (subUser === false) ? true : false,
-                                tooltip: __("Show all items, also those you've taken action on."),
-                                handler: function () {
-                                    if (this.pressed) {
-                                        workflowStore.load({params: "all=t"});
-                                    } else {
-                                        workflowStore.load();
-                                    }
-                                }
-                            },
-                            {
-                                text: '<i class="icon-pencil btn-gc"></i> ' + __('See/edit feature'),
-                                tooltip: __("Switch to Map view with the feature loaded."),
-                                handler: function () {
-                                    var records = Ext.getCmp("workflowGrid").getSelectionModel().getSelections();
-                                    if (records.length === 0) {
-                                        App.setAlert(App.STATUS_NOTICE, __("You've to select a layer"));
-                                    }
-                                    Ext.Ajax.request({
-                                        url: '/api/v1/meta/' + screenName + '/' + records[0].get("f_schema_name") + "." + records[0].get("f_table_name"),
-                                        method: 'GET',
-                                        headers: {
-                                            'Content-Type': 'application/json; charset=utf-8'
-                                        },
-                                        success: function (response) {
-                                            var r = Ext.decode(response.responseText),
-                                                mapFrame = document.getElementById("wfseditor").contentWindow.window,
-                                                filter = new mapFrame.OpenLayers.Filter.Comparison({
-                                                    type: mapFrame.OpenLayers.Filter.Comparison.EQUAL_TO,
-                                                    property: "\"" + r.data[0].pkey + "\"",
-                                                    value: records[0].get("gid")
-                                                });
-                                            Ext.getCmp("mainTabs").activate(0);
-                                            setTimeout(function () {
-                                                mapFrame.attributeForm.init(records[0].get("f_table_name"), r.data[0].pkey);
-                                                mapFrame.startWfsEdition(records[0].get("f_table_name"), r.data[0].f_geometry_column, filter, true);
-                                            }, 100);
-                                        },
-                                        failure: function (response) {
-                                            Ext.MessageBox.show({
-                                                title: 'Failure',
-                                                msg: __(Ext.decode(response.responseText).message),
-                                                buttons: Ext.MessageBox.OK,
-                                                width: 400,
-                                                height: 300,
-                                                icon: Ext.MessageBox.ERROR
-                                            });
-                                        }
-                                    });
-                                }
-                            },
-                            {
-                                text: '<i class="icon-ok btn-gc"></i> ' + __('Check feafure'),
-                                tooltip: __("This will update the feature with your role in the workflow."),
-                                handler: function () {
-                                    var records = Ext.getCmp("workflowGrid").getSelectionModel().getSelections();
-                                    if (records.length === 0) {
-                                        App.setAlert(App.STATUS_NOTICE, __("You've to select a layer"));
-                                    }
-                                    Ext.Ajax.request({
-                                        url: '/controllers/workflow/' + records[0].get("f_schema_name") + "/" + records[0].get("f_table_name") + "/" + records[0].get("gid"),
-                                        method: 'PUT',
-                                        headers: {
-                                            'Content-Type': 'application/json; charset=utf-8'
-                                        },
-                                        success: function (response) {
-                                            if (Ext.getCmp('workflowShowAllBtn').pressed) {
-                                                workflowStore.load({params: "all=t"});
-                                            } else {
-                                                workflowStore.load();
-                                            }
-                                        },
-                                        failure: function (response) {
-                                            Ext.MessageBox.show({
-                                                title: 'Failure',
-                                                msg: __(Ext.decode(response.responseText).message),
-                                                buttons: Ext.MessageBox.OK,
-                                                width: 400,
-                                                height: 300,
-                                                icon: Ext.MessageBox.ERROR
-                                            });
-                                        }
-                                    });
-                                }
-                            }
-                        ]
-                    }), {
-                        region: 'south',
-                        id: 'workflow_footer',
-                        border: false,
-                        height: 70,
-                        bodyStyle: {
-                            background: '#777',
-                            color: '#fff',
-                            padding: '7px'
-                        }
-                    }
-                ]
-            },
-            {
-                xtype: "panel",
-                title: __('Scheduler'),
-                layout: 'border',
-                id: "schedulerPanel",
-                items: [
-                    {
-                        frame: false,
-                        border: false,
-                        region: "center",
-                        html: '<iframe frameborder="0" id="scheduler" style="width:100%;height:100%" src="/scheduler/index2.html"></iframe>'
-                    }
-                ]
-            },
+            // ct,
+            // {
+            //     xtype: "panel",
+            //     title: __('Workflow'),
+            //     layout: 'border',
+            //     id: "workflowPanel",
+            //     listeners: {
+            //         activate: function () {
+            //             if (!workflowStoreLoaded) {
+            //                 workflowStore.load();
+            //                 workflowStoreLoaded = true;
+            //             }
+            //         }
+            //     },
+            //     items: [
+            //         new Ext.grid.GridPanel({
+            //             id: "workflowGrid",
+            //             store: workflowStore,
+            //             viewConfig: {
+            //                 forceFit: true,
+            //                 stripeRows: true
+            //             },
+            //             height: 300,
+            //             split: true,
+            //             region: 'center',
+            //             frame: false,
+            //             border: false,
+            //             plugins: [new Ext.ux.grid.GridFilters({
+            //                 // encode and local configuration options defined previously for easier reuse
+            //                 //encode: encode, // json encode the filter query
+            //                 local: true,   // defaults to false (remote filtering)
+            //                 filters: [{
+            //                     type: 'string',
+            //                     dataIndex: 'f_table_name',
+            //                     disabled: false
+            //                 }]
+            //             })],
+            //             sm: new Ext.grid.RowSelectionModel({
+            //                 singleSelect: true
+            //             }),
+            //             cm: new Ext.grid.ColumnModel({
+            //                 defaults: {
+            //                     sortable: true,
+            //                     menuDisabled: true
+            //                 },
+            //                 columns: [
+            //                     {
+            //                         header: __("Operation"),
+            //                         dataIndex: "operation",
+            //                         sortable: true,
+            //                         width: 35,
+            //                         flex: 1
+            //                     }, /*{
+            //                         header: __("Schema"),
+            //                         dataIndex: "f_schema_name",
+            //                         sortable: true,
+            //                         width: 35,
+            //                         flex: 0.5
+            //                     },*/
+            //                     {
+            //                         header: __("Table"),
+            //                         dataIndex: "f_table_name",
+            //                         sortable: true,
+            //                         width: 35,
+            //                         flex: 0.5,
+            //                         menuDisabled: false
+            //                     }, {
+            //                         header: __("Fid"),
+            //                         dataIndex: "gid",
+            //                         sortable: true,
+            //                         width: 25,
+            //                         flex: 1
+            //                     }, {
+            //                         header: __("Version id"),
+            //                         dataIndex: "version_gid",
+            //                         sortable: true,
+            //                         width: 40,
+            //                         flex: 1
+            //                     }, {
+            //                         header: __("Status"),
+            //                         dataIndex: "status_text",
+            //                         sortable: true,
+            //                         width: 35,
+            //                         flex: 1
+            //                     }, {
+            //                         header: __("Latest edit by"),
+            //                         dataIndex: "gc2_user",
+            //                         sortable: true,
+            //                         width: 50,
+            //                         flex: 1
+            //                     }, {
+            //                         header: __("Authored by"),
+            //                         dataIndex: "author",
+            //                         sortable: true,
+            //                         width: 50,
+            //                         flex: 2
+            //                     }, {
+            //                         header: __("Reviewed by"),
+            //                         dataIndex: "reviewer",
+            //                         sortable: true,
+            //                         width: 50,
+            //                         flex: 2
+            //                     }, {
+            //                         header: __("Published by"),
+            //                         dataIndex: "publisher",
+            //                         sortable: true,
+            //                         width: 50,
+            //                         flex: 2
+            //                     }, {
+            //                         header: __("Created"),
+            //                         dataIndex: "created",
+            //                         sortable: true,
+            //                         width: 120,
+            //                         flex: 1
+            //                     }
+            //                 ]
+            //             }),
+            //             tbar: [
+            //                 {
+            //                     text: '<i class="icon-refresh btn-gc"></i> ' + __('Reload'),
+            //                     tooltip: __("Reload the list"),
+            //                     handler: function () {
+            //                         if (Ext.getCmp('workflowShowAllBtn').pressed) {
+            //                             workflowStore.load({params: "all=t"});
+            //                         } else {
+            //                             workflowStore.load();
+            //                         }
+            //                     }
+            //                 },
+            //                 {
+            //                     text: '<i class="icon-tasks btn-gc"></i> ' + __('Show all'),
+            //                     enableToggle: true,
+            //                     id: "workflowShowAllBtn",
+            //                     disabled: (subUser === false) ? true : false,
+            //                     tooltip: __("Show all items, also those you've taken action on."),
+            //                     handler: function () {
+            //                         if (this.pressed) {
+            //                             workflowStore.load({params: "all=t"});
+            //                         } else {
+            //                             workflowStore.load();
+            //                         }
+            //                     }
+            //                 },
+            //                 {
+            //                     text: '<i class="icon-pencil btn-gc"></i> ' + __('See/edit feature'),
+            //                     tooltip: __("Switch to Map view with the feature loaded."),
+            //                     handler: function () {
+            //                         var records = Ext.getCmp("workflowGrid").getSelectionModel().getSelections();
+            //                         if (records.length === 0) {
+            //                             App.setAlert(App.STATUS_NOTICE, __("You've to select a layer"));
+            //                         }
+            //                         Ext.Ajax.request({
+            //                             url: '/api/v1/meta/' + screenName + '/' + records[0].get("f_schema_name") + "." + records[0].get("f_table_name"),
+            //                             method: 'GET',
+            //                             headers: {
+            //                                 'Content-Type': 'application/json; charset=utf-8'
+            //                             },
+            //                             success: function (response) {
+            //                                 var r = Ext.decode(response.responseText),
+            //                                     mapFrame = document.getElementById("wfseditor").contentWindow.window,
+            //                                     filter = new mapFrame.OpenLayers.Filter.Comparison({
+            //                                         type: mapFrame.OpenLayers.Filter.Comparison.EQUAL_TO,
+            //                                         property: "\"" + r.data[0].pkey + "\"",
+            //                                         value: records[0].get("gid")
+            //                                     });
+            //                                 Ext.getCmp("mainTabs").activate(0);
+            //                                 setTimeout(function () {
+            //                                     mapFrame.attributeForm.init(records[0].get("f_table_name"), r.data[0].pkey);
+            //                                     mapFrame.startWfsEdition(records[0].get("f_table_name"), r.data[0].f_geometry_column, filter, true);
+            //                                 }, 100);
+            //                             },
+            //                             failure: function (response) {
+            //                                 Ext.MessageBox.show({
+            //                                     title: 'Failure',
+            //                                     msg: __(Ext.decode(response.responseText).message),
+            //                                     buttons: Ext.MessageBox.OK,
+            //                                     width: 400,
+            //                                     height: 300,
+            //                                     icon: Ext.MessageBox.ERROR
+            //                                 });
+            //                             }
+            //                         });
+            //                     }
+            //                 },
+            //                 {
+            //                     text: '<i class="icon-ok btn-gc"></i> ' + __('Check feafure'),
+            //                     tooltip: __("This will update the feature with your role in the workflow."),
+            //                     handler: function () {
+            //                         var records = Ext.getCmp("workflowGrid").getSelectionModel().getSelections();
+            //                         if (records.length === 0) {
+            //                             App.setAlert(App.STATUS_NOTICE, __("You've to select a layer"));
+            //                         }
+            //                         Ext.Ajax.request({
+            //                             url: '/controllers/workflow/' + records[0].get("f_schema_name") + "/" + records[0].get("f_table_name") + "/" + records[0].get("gid"),
+            //                             method: 'PUT',
+            //                             headers: {
+            //                                 'Content-Type': 'application/json; charset=utf-8'
+            //                             },
+            //                             success: function (response) {
+            //                                 if (Ext.getCmp('workflowShowAllBtn').pressed) {
+            //                                     workflowStore.load({params: "all=t"});
+            //                                 } else {
+            //                                     workflowStore.load();
+            //                                 }
+            //                             },
+            //                             failure: function (response) {
+            //                                 Ext.MessageBox.show({
+            //                                     title: 'Failure',
+            //                                     msg: __(Ext.decode(response.responseText).message),
+            //                                     buttons: Ext.MessageBox.OK,
+            //                                     width: 400,
+            //                                     height: 300,
+            //                                     icon: Ext.MessageBox.ERROR
+            //                                 });
+            //                             }
+            //                         });
+            //                     }
+            //                 }
+            //             ]
+            //         }), {
+            //             region: 'south',
+            //             id: 'workflow_footer',
+            //             border: false,
+            //             height: 70,
+            //             bodyStyle: {
+            //                 background: '#777',
+            //                 color: '#fff',
+            //                 padding: '7px'
+            //             }
+            //         }
+            //     ]
+            // },
+            // {
+            //     xtype: "panel",
+            //     title: __('Scheduler'),
+            //     layout: 'border',
+            //     id: "schedulerPanel",
+            //     items: [
+            //         {
+            //             frame: false,
+            //             border: false,
+            //             region: "center",
+            //             html: '<iframe frameborder="0" id="scheduler" style="width:100%;height:100%" src="/scheduler/index2.html"></iframe>'
+            //         }
+            //     ]
+            // },
             // {
             //     xtype: "panel",
             //     title: __('Log'),
