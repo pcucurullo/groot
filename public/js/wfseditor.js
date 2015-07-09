@@ -766,89 +766,89 @@ $(document).ready(function () {
                                     })
                                 ]
                             },
-                            new Ext.Panel({
-                                border: true,
-                                region: "west",
-                                collapsible: true,
-                                width: 350,
-                                tbar: [{
-                                    text: '<i class="icon-eye-open btn-gc"></i> ' + __('Class wizard'),
-                                    id: 'stylebutton',
-                                    disabled: true,
-                                    handler: function () {
-                                        var node = tree.getSelectionModel().getSelectedNode();
-                                        window.parent.styleWizardWin(node.id);
-                                    }
-                                }, '-', {
-                                    text: '<i class="icon-plus btn-gc"></i> ' + __('New layer'),
-                                    disabled: (subUser === schema || subUser === false) ? false : true,
-                                    handler: function () {
-                                        window.parent.onAdd();
-                                    }
-                                }, '-',
-                                    {
-                                        text: "<i class='icon-edit btn-gc'></i> " + __("Start edit"),
-                                        id: "editlayerbutton",
-                                        disabled: true,
-                                        handler: function (thisBtn, event) {
-                                            try {
-                                                stopEdit();
-                                            }
-                                            catch (e) {
-                                            }
-                                            var node = tree.getSelectionModel().getSelectedNode();
-                                            var id = node.id.split(".");
-                                            var geomField = node.attributes.geomField;
-                                            var type = node.attributes.geomType;
-                                            attributeForm.init(id[1], geomField);
-                                            if (type === "GEOMETRY" || type === "RASTER") {
-                                                Ext.MessageBox.show({
-                                                    title: 'No geometry type on layer',
-                                                    msg: "The layer has no geometry type or type is GEOMETRY. You can set geom type for the layer in 'Settings' to the right.",
-                                                    buttons: Ext.MessageBox.OK,
-                                                    width: 400,
-                                                    height: 300,
-                                                    icon: Ext.MessageBox.ERROR
-                                                });
-                                            }
-                                            else {
-                                                var poll = function () {
-                                                    if (typeof filter.win === "object") {
-                                                        filter.win.show();
-                                                    }
-                                                    else {
-                                                        setTimeout(poll, 10);
-                                                    }
-                                                };
-                                                poll();
-                                            }
-                                        }
-                                    }, '-', {
-                                        text: "<i class='icon-refresh btn-gc'></i> " + __("Reload"),
-                                        handler: function () {
-                                            stopEdit();
-                                            reLoadTree();
-                                        }
-                                    }],
-                                items: [
-                                    {
-                                        xtype: "panel",
-                                        border: false,
-                                        tbar: wfsTools,
-                                        html: "<div class=\"layer-desc\">Click on a layer title to access settings and to edit data. Check the box to see the layer in the map.</div>"
-                                    },
-                                    new Ext.Panel({
-                                        border: false,
-                                        id: "treepanel",
-                                        style: {
-                                            height: (Ext.getBody().getViewSize().height - 120) + "px",
-                                            overflow: "auto"
-                                        },
-                                        collapsible: false
+                            // new Ext.Panel({
+                            //     border: true,
+                            //     region: "west",
+                            //     collapsible: true,
+                            //     width: 350,
+                            //     tbar: [{
+                            //         text: '<i class="icon-eye-open btn-gc"></i> ' + __('Class wizard'),
+                            //         id: 'stylebutton',
+                            //         disabled: true,
+                            //         handler: function () {
+                            //             var node = tree.getSelectionModel().getSelectedNode();
+                            //             window.parent.styleWizardWin(node.id);
+                            //         }
+                            //     }, '-', {
+                            //         text: '<i class="icon-plus btn-gc"></i> ' + __('New layer'),
+                            //         disabled: (subUser === schema || subUser === false) ? false : true,
+                            //         handler: function () {
+                            //             window.parent.onAdd();
+                            //         }
+                            //     }, '-',
+                            //         {
+                            //             text: "<i class='icon-edit btn-gc'></i> " + __("Start edit"),
+                            //             id: "editlayerbutton",
+                            //             disabled: true,
+                            //             handler: function (thisBtn, event) {
+                            //                 try {
+                            //                     stopEdit();
+                            //                 }
+                            //                 catch (e) {
+                            //                 }
+                            //                 var node = tree.getSelectionModel().getSelectedNode();
+                            //                 var id = node.id.split(".");
+                            //                 var geomField = node.attributes.geomField;
+                            //                 var type = node.attributes.geomType;
+                            //                 attributeForm.init(id[1], geomField);
+                            //                 if (type === "GEOMETRY" || type === "RASTER") {
+                            //                     Ext.MessageBox.show({
+                            //                         title: 'No geometry type on layer',
+                            //                         msg: "The layer has no geometry type or type is GEOMETRY. You can set geom type for the layer in 'Settings' to the right.",
+                            //                         buttons: Ext.MessageBox.OK,
+                            //                         width: 400,
+                            //                         height: 300,
+                            //                         icon: Ext.MessageBox.ERROR
+                            //                     });
+                            //                 }
+                            //                 else {
+                            //                     var poll = function () {
+                            //                         if (typeof filter.win === "object") {
+                            //                             filter.win.show();
+                            //                         }
+                            //                         else {
+                            //                             setTimeout(poll, 10);
+                            //                         }
+                            //                     };
+                            //                     poll();
+                            //                 }
+                            //             }
+                            //         }, '-', {
+                            //             text: "<i class='icon-refresh btn-gc'></i> " + __("Reload"),
+                            //             handler: function () {
+                            //                 stopEdit();
+                            //                 reLoadTree();
+                            //             }
+                            //         }],
+                            //     items: [
+                            //         {
+                            //             xtype: "panel",
+                            //             border: false,
+                            //             tbar: wfsTools,
+                            //             html: "<div class=\"layer-desc\">Click on a layer title to access settings and to edit data. Check the box to see the layer in the map.</div>"
+                            //         },
+                            //         new Ext.Panel({
+                            //             border: false,
+                            //             id: "treepanel",
+                            //             style: {
+                            //                 height: (Ext.getBody().getViewSize().height - 120) + "px",
+                            //                 overflow: "auto"
+                            //             },
+                            //             collapsible: false
 
-                                    })
-                                ]
-                            })
+                            //         })
+                            //     ]
+                            // })
                         ]
                     });
 

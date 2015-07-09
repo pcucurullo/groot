@@ -2739,5 +2739,4 @@ $(window).ready(function () {
 });
 
 
-// Hide tab bar
-$('.x-tab-panel-header').css('display:none;');
+
